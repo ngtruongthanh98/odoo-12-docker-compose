@@ -1,25 +1,26 @@
 version: '2'
 services:
+  db:
+    image: postgres:10
+    volumes:
+      - db-data:/var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432/tcp
+    environment:
+    - POSTGRES_PASSWORD=odoo
+    - POSTGRES_USER=odoo
+    - POSTGRES_DB=postgres
+    - PGDATA=/var/lib/postgresql/data/pgdata
   web:
     image: odoo:12.0
     depends_on:
       - db
     ports:
-      - "8069:8069"
+      - "8069:8069/tcp"
     volumes:
-      - odoo-web-data:/var/lib/odoo
+      - web-data:/var/lib/odoo
       - ./etc:/etc/odoo
       - ./addons:/mnt/extra-addons
-
-  db:
-    image: postgres:10
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD=odoo
-      - POSTGRES_USER=odoo
-      - PGDATA=/var/lib/postgresql/data/pgdata
-    volumes: 
-      - odoo-db-data:/var/lib/postgresql/data/pgdata
-volumes: 
-  odoo-web-data:
-  odoo-db-data:
+volumes:
+  db-data:
+  web-data:
